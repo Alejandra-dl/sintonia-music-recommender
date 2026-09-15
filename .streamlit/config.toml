@@ -1,0 +1,25 @@
+# ============================================================
+# Tema del cuadro de mando.
+#
+# El panel tiene identidad propia, de fondo oscuro, distinta de
+# la aplicación de usuario. Sin este fichero Streamlit arranca
+# con su tema claro y deja una franja blanca arriba dentro de un
+# panel oscuro. Los colores son los mismos que define
+# asistente/dashboard/estilo.py, que es donde viven de verdad.
+#
+# No afecta a la aplicación Flask, que tiene su propia hoja de
+# estilos.
+# ============================================================
+
+[theme]
+base = "dark"
+primaryColor = "#1ed760"
+backgroundColor = "#0b0f0c"
+secondaryBackgroundColor = "#111713"
+textColor = "#f2f6f2"
+
+[server]
+headless = true
+
+[browser]
+gatherUsageStats = false

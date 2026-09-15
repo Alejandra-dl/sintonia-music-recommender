@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11100f">
+  <title>{% block titulo %}Sintonía{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+</head>
+<body>
+{% if usuario %}
+<header class="barra">
+  <a class="marca" href="{{ url_for('pantalla_inicio') }}" aria-label="Ir al inicio">
+    <span class="marca-punto"></span>
+    <span>Sintonía</span>
+  </a>
+  <nav aria-label="Navegación principal">
+    <a href="{{ url_for('pantalla_inicio') }}" class="{{ 'activo' if activa == 'inicio' }}">Inicio</a>
+    <a href="{{ url_for('pantalla_resumen') }}" class="{{ 'activo' if activa == 'perfil' }}">Mi perfil</a>
+    <a href="{{ url_for('pantalla_animo') }}" class="{{ 'activo' if activa == 'animo' }}">Para ti</a>
+  </nav>
+  <div class="sesion">
+    <span class="usuario">{{ usuario }}</span>
+    <a href="{{ url_for('salir') }}" class="salir">Cambiar usuario</a>
+  </div>
+</header>
+{% endif %}
+<main>{% block contenido %}{% endblock %}</main>
+</body>
+</html>

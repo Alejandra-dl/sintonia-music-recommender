@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% set activa = 'animo' %}
+{% block titulo %}Para ti · Sintonía{% endblock %}
+{% block contenido %}
+<div class="hoja">
+  <div class="cabecera-animo">
+    <p class="eyebrow">PARA ESTE MOMENTO</p>
+    <h1 class="titulo-pantalla">¿Cómo te sientes hoy?</h1>
+    <p class="subtitulo">Elige la opción que más se acerque a tu momento. Por defecto combino música que ya conoces con nuevos descubrimientos, aunque puedes elegir solo una de las dos.</p>
+  </div>
+
+  <div class="animos">
+    {% for a in animos %}
+    <a class="animo {{ 'elegido' if a == animo }}" href="{{ url_for('pantalla_animo', animo=a, momento=momento, mezcla=mezcla) }}">
+      <span class="animo-icono">{{ animos_ui[a].icono }}</span>
+      <span class="animo-nombre">{{ a }}</span>
+      <span class="animo-texto">{{ animos_ui[a].texto }}</span>
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="momentos">
+    <span class="momentos-titulo">¿Cuándo la vas a escuchar?</span>
+    {% for clave, datos in momentos.items() %}
+    <a class="momento {{ 'elegido' if clave == momento }}" href="{{ url_for('pantalla_animo', animo=animo, momento=clave, mezcla=mezcla) }}">
+      <span>{{ datos.icono }}</span> {{ datos.nombre }}
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="momentos">
+    <span class="momentos-titulo">¿Algo conocido o algo nuevo?</span>
+    {% for clave, datos in mezclas.items() %}
+    <a class="momento {{ 'elegido' if clave == mezcla }}" href="{{ url_for('pantalla_animo', animo=animo, momento=momento, mezcla=clave) }}">{{ datos.nombre }}</a>
+    {% endfor %}
+  </div>
+
+  {% if error_playlist %}
+    <p class="aviso error">{{ error_playlist }}</p>
+  {% endif %}
+
+  {% if resultado %}
+    <div class="resultado-playlist">
+      <p class="eyebrow">LISTO</p>
+      <h2>Ya tienes tu playlist en Spotify</h2>
+      <p class="resultado-detalle">
+        He creado <b>{{ resultado.nombre }}</b> con <b>{{ resultado.anadidas }}</b>
+        {{ 'canción' if resultado.anadidas == 1 else 'canciones' }}:
+        {{ resultado.conocidas }} que ya conoces y {{ resultado.descubrimientos }} descubrimientos.
+      </p>
+      {% set n_fuera = n_fuera|default(resultado.no_encontradas|length, true) %}
+      {% if resultado.no_encontradas %}
+        <p class="resultado-nota">
+          {{ n_fuera }}
+          {{ 'canción no estaba' if n_fuera == 1 else 'canciones no estaban' }}
+          disponible{{ '' if n_fuera == 1 else 's' }} en Spotify y
+          {{ 'se ha' if n_fuera == 1 else 'se han' }} quedado fuera:
+          {{ resultado.no_encontradas[:4]|join('; ') }}{% if n_fuera > 4 %}…{% endif %}
+        </p>
+      {% endif %}
+      {% if resultado.no_anadidas %}
+        <p class="resultado-nota">{{ resultado.no_anadidas }} no se pudieron añadir a la lista. Puedes volver a intentarlo.</p>
+      {% endif %}
+      {% if not resultado.equilibrada %}
+        <p class="resultado-nota">No he podido llegar al reparto exacto de mitad y mitad porque no había suficientes canciones en uno de los dos grupos.</p>
+      {% endif %}
+      {% if resultado.url %}
+        <a class="boton primario" href="{{ resultado.url }}" target="_blank" rel="noopener">Abrir playlist en Spotify</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if animo %}
+    <div class="resultado-cabecera">
+      <div>
+        <p class="eyebrow">TU SELECCIÓN</p>
+        <h2>{{ recomendaciones|length }} canciones para {{ animo|lower }}</h2>
+        {% if reparto %}
+          <p class="reparto">
+            {% if reparto.conocidas %}<span class="marca conocida">{{ reparto.conocidas }} que ya conoces</span>{% endif %}
+            {% if reparto.conocidas and reparto.descubrimientos %}<span class="reparto-mas">+</span>{% endif %}
+            {% if reparto.descubrimientos %}<span class="marca nueva">{{ reparto.descubrimientos }} descubrimientos</span>{% endif %}
+          </p>
+        {% endif %}
+        {% if recomendaciones %}
+          <a class="enlace-tenue" href="{{ url_for('pantalla_animo', animo=animo, momento=momento, mezcla=mezcla, vuelta=vuelta + 1) }}">↻ Enséñame otras</a>
+        {% endif %}
+      </div>
+      <span class="pill">{{ animos_ui[animo].icono }} {{ animo }}</span>
+    </div>
+
+    {% if recomendaciones %}
+    <div class="fichas">
+      {% for r in recomendaciones %}
+      <article class="ficha">
+        <div class="portada-wrap">
+          {% if imagenes.get(r.get('spotify_track_uri')) %}
+            <img class="portada" src="{{ imagenes[r.get('spotify_track_uri')] }}" alt="Portada de {{ r.cancion }}">
+          {% else %}
+            <div class="portada inicial" style="background: {{ color(r.artista) }}">{{ r.artista[0]|upper }}</div>
+          {% endif %}
+          <span class="numero-reco">{{ loop.index }}</span>
+          <span class="marca {{ 'conocida' if r.origen == 'conocida' else 'nueva' }}">{{ r.etiqueta_origen }}</span>
+        </div>
+        <h3>{{ r.cancion }}</h3>
+        <p class="artista">{{ r.artista }}</p>
+        <p class="explicacion">{{ r.motivo_usuario }}</p>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="caja-playlist">
+      <div class="caja-playlist-texto">
+        <strong>¿Te la llevas a Spotify?</strong>
+        <small>Crearé una playlist privada de {{ canciones_playlist }} canciones para «{{ animo }}»,
+          {%- if mezcla == 'conocidas' %} todas de música que ya conoces.
+          {%- elif mezcla == 'nuevas' %} todas de artistas que no has escuchado nunca.
+          {%- else %} con el mismo reparto: {{ (canciones_playlist / 2)|int }} que ya conoces y {{ (canciones_playlist / 2)|int }} descubrimientos.
+          {%- endif %}</small>
+      </div>
+      {% if not spotify_disponible %}
+        <p class="caja-playlist-aviso">La conexión con Spotify no está configurada en este equipo.</p>
+      {% elif spotify_conectado %}
+        <form method="post" action="{{ url_for('crear_playlist') }}">
+          <input type="hidden" name="animo" value="{{ animo }}">
+          <input type="hidden" name="momento" value="{{ momento }}">
+          <input type="hidden" name="mezcla" value="{{ mezcla }}">
+          <input type="hidden" name="vuelta" value="{{ vuelta }}">
+          <button type="submit" class="boton primario">Crear playlist en Spotify</button>
+        </form>
+        <a class="enlace-tenue" href="{{ url_for('spotify_desconectar', animo=animo, momento=momento, mezcla=mezcla, vuelta=vuelta) }}">Desconectar mi cuenta</a>
+      {% else %}
+        <a class="boton primario" href="{{ url_for('spotify_conectar', animo=animo, momento=momento, mezcla=mezcla, vuelta=vuelta) }}">Conectar mi cuenta de Spotify</a>
+        <small class="caja-playlist-aviso">Sólo pido permiso para crear playlists. No leo tu biblioteca ni tu actividad.</small>
+      {% endif %}
+    </div>
+    {% else %}
+      <p class="aviso">Ahora mismo no hay canciones disponibles para generar esta selección.</p>
+    {% endif %}
+  {% else %}
+    <div class="estado-vacio"><span>✦</span><p>Elige cómo te sientes para preparar tu selección.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

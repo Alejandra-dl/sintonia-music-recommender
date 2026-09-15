@@ -1,0 +1,49 @@
+# --- Secrets -------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# --- Private / generated data --------------------------------
+# Personal listening history, processed tables, caches and models.
+# Only the synthetic sample in sample_data/ is versioned.
+/datos/
+/data/
+Streaming_History_*.json
+!sample_data/raw/Streaming_History_Audio_sample.json
+*.parquet
+*.csv.gz
+*.sqlite
+*.sqlite3
+*.db
+*.pkl
+*.joblib
+
+# --- Python --------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# --- Notebooks -----------------------------------------------
+.ipynb_checkpoints/
+
+# --- Logs, caches, temp --------------------------------------
+logs/
+*.log
+.cache/
+.pytest_cache/
+*.tmp
+*.bak
+~$*
+
+# --- Docker volumes (if bound locally) -----------------------
+mongo_datos/
+mongo-data/
+
+# --- Editors / OS --------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

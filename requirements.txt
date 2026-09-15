@@ -1,0 +1,36 @@
+# ============================================================
+# Dependencias del proyecto.
+#
+# Se instalan dentro del contenedor con:
+#     pip install -r requirements.txt
+#
+# Solo están las librerías que el proyecto usa de verdad. Las
+# consultas a Last.fm y MusicBrainz se hacen con urllib, que
+# viene con Python, así que no hace falta requests.
+# ============================================================
+
+# --- Datos y modelado ---------------------------------------
+pandas>=2.0
+numpy>=1.24
+scikit-learn==1.8.0    # FIJADA: el modelo guardado (modelo_afinidad.pkl) es un Pipeline
+                       # serializado con esta versión. Con otra versión el pickle puede no
+                       # abrirse o avisar de incompatibilidad. Si se cambia, hay que
+                       # reentrenar (notebook 03 o entrenar.py) antes de usar la aplicación
+xgboost>=2.0           # solo para los experimentos de comparación de modelos
+                       # (programa/notebooks/experimentos/). La aplicación no lo
+                       # necesita: el modelo que sirve es un Pipeline de sklearn
+pyarrow>=14.0          # formato Parquet. Si en algún equipo falla, el
+                       # proyecto sigue con CSV comprimido (ver io_datos.py)
+pymongo>=4.6           # cliente de MongoDB
+tabulate>=0.9          # pandas la necesita para escribir tablas en Markdown
+                       # en los informes de calidad y de cobertura
+
+# --- Aplicación web -----------------------------------------
+flask>=3.0             # la web que se enseña en la defensa
+streamlit>=1.36        # el dashboard de análisis
+plotly>=5.18           # gráficas interactivas del dashboard
+
+# --- Notebooks y figuras ------------------------------------
+jupyterlab>=4.0
+matplotlib>=3.8        # figuras de los notebooks, las que van a la memoria
+seaborn>=0.13

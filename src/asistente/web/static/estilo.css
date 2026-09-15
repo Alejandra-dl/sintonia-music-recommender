@@ -1,0 +1,395 @@
+/* ============================================================
+   Estilo de la aplicación web (Sintonía).
+
+   Identidad de aplicación de música: fondo negro, superficies
+   grises muy oscuras y un único acento verde. Pocos colores,
+   jerarquía clara y tarjetas limpias; el color se reserva para
+   lo accionable, no para decorar.
+
+   Todo el CSS está en este fichero. No hay framework de estilos
+   ni compilación: se edita y se recarga el navegador.
+   ============================================================ */
+
+:root{
+  --fondo:#121212;
+  --superficie:#181818;
+  --superficie-alta:#242424;
+  --superficie-hover:#2a2a2a;
+  --borde:#2b2b2b;
+  --borde-suave:#232323;
+  --verde:#1db954;
+  --verde-claro:#1ed760;
+  --verde-tenue:rgba(29,185,84,.12);
+  --texto:#ffffff;
+  --texto-2:#b3b3b3;
+  --texto-3:#7d7d7d;
+  --radio:12px;
+  --radio-g:16px;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0; padding:0}
+body{
+  background:var(--fondo); color:var(--texto);
+  font-family:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+a{color:inherit; text-decoration:none}
+h1,h2,h3{margin:0; font-weight:600; letter-spacing:-.02em}
+:focus-visible{outline:2px solid var(--verde); outline-offset:3px; border-radius:6px}
+
+/* --- Etiquetas pequeñas de sección ------------------------- */
+.eyebrow{
+  margin:0 0 10px; font-size:11.5px; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--texto-3);
+}
+
+/* --- Barra superior ---------------------------------------- */
+.barra{
+  display:flex; align-items:center; gap:32px;
+  padding:14px 32px; border-bottom:1px solid var(--borde-suave);
+  background:rgba(18,18,18,.92); backdrop-filter:blur(10px);
+  position:sticky; top:0; z-index:10;
+}
+.marca{display:flex; align-items:center; gap:10px; font-weight:700; font-size:19px}
+.marca-punto{
+  width:13px; height:13px; border-radius:50%; background:var(--verde); flex:none;
+}
+.marca-punto.grande{width:30px; height:30px; margin:0 auto 20px}
+.barra nav{display:flex; gap:26px; flex:1; font-size:15px}
+.barra nav a{color:var(--texto-2); padding-bottom:3px; border-bottom:2px solid transparent; transition:color .15s}
+.barra nav a:hover{color:var(--texto)}
+.barra nav a.activo{color:var(--texto); border-bottom-color:var(--verde)}
+.sesion{display:flex; align-items:center; gap:14px; font-size:14px}
+.usuario{
+  background:var(--superficie-alta); color:var(--texto);
+  padding:5px 13px; border-radius:999px; font-weight:500; font-size:13.5px;
+}
+.salir{color:var(--texto-3)}
+.salir:hover{color:var(--texto-2)}
+
+/* --- Botones ----------------------------------------------- */
+.boton{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:13px 28px; border-radius:999px; font-weight:600; font-size:15.5px;
+  border:1px solid transparent; transition:transform .12s, background .15s, border-color .15s;
+  white-space:nowrap;
+}
+.boton.primario{background:var(--verde); color:#06180d}
+.boton.primario:hover{background:var(--verde-claro); transform:scale(1.03)}
+.boton.secundario{background:transparent; color:var(--texto); border-color:#4a4a4a}
+.boton.secundario:hover{border-color:var(--texto); transform:scale(1.03)}
+.boton.compacto{padding:10px 22px; font-size:14.5px}
+
+/* --- Pantalla de entrada ----------------------------------- */
+.pantalla-entrada{min-height:calc(100vh - 8px); display:grid; place-items:center; padding:24px}
+.entrada-caja{
+  text-align:center; max-width:420px; width:100%;
+  background:var(--superficie); border:1px solid var(--borde);
+  border-radius:20px; padding:44px 40px;
+}
+.logo-grande{display:block}
+.entrada-caja h1{font-size:38px; margin-bottom:8px}
+.lema{color:var(--texto-2); margin:0 0 32px; font-size:15.5px}
+.entrada-caja label{
+  display:block; text-align:left; font-size:11.5px; color:var(--texto-3);
+  margin-bottom:8px; text-transform:uppercase; letter-spacing:.14em; font-weight:600;
+}
+select,button{
+  width:100%; font-family:inherit; font-size:16px; border-radius:999px;
+  padding:13px 18px; border:1px solid var(--borde);
+}
+select{background:var(--superficie-alta); color:var(--texto); margin-bottom:14px; border-radius:10px}
+button{
+  background:var(--verde); color:#06180d; border:none;
+  font-weight:600; cursor:pointer; transition:background .15s, transform .12s;
+}
+button:hover{background:var(--verde-claro); transform:scale(1.02)}
+.pie{font-size:13px; color:var(--texto-3); margin:22px 0 0}
+
+/* --- Estructura de página ---------------------------------- */
+.hoja{max-width:1080px; margin:0 auto; padding:44px 32px 96px}
+.hoja.estrecha{max-width:760px}
+.titulo-pantalla{font-size:34px; margin-bottom:6px}
+.subtitulo{color:var(--texto-2); margin:0}
+.cabecera-pagina,.cabecera-animo{margin-bottom:34px}
+.cabecera-pagina{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap}
+
+/* --- Inicio: bienvenida ------------------------------------ */
+.inicio-hoja{padding-top:56px}
+.hero{max-width:660px; margin-bottom:44px}
+.hero h1{font-size:clamp(32px,4.6vw,48px); line-height:1.1; margin-bottom:16px}
+.hero-texto{color:var(--texto-2); font-size:17px; margin:0 0 22px; max-width:52ch}
+.hero-datos{
+  display:flex; flex-wrap:wrap; gap:8px 22px; margin:0 0 30px;
+  padding:0; list-style:none; font-size:14px; color:var(--texto-3);
+}
+.hero-datos li{display:flex; align-items:baseline; gap:7px}
+.hero-datos b{color:var(--texto-2); font-weight:600; font-variant-numeric:tabular-nums}
+.hero-acciones{display:flex; gap:12px; flex-wrap:wrap}
+
+/* --- Inicio: accesos --------------------------------------- */
+.atajos{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px}
+.atajo{
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:18px;
+  background:var(--superficie); border:1px solid var(--borde-suave);
+  border-radius:var(--radio-g); padding:22px 24px;
+  transition:background .15s, border-color .15s, transform .12s;
+}
+.atajo:hover{background:var(--superficie-alta); border-color:var(--borde); transform:translateY(-2px)}
+.atajo strong{display:block; font-size:17px; font-weight:600; margin-bottom:3px}
+.atajo small{display:block; font-size:13.5px; color:var(--texto-3); line-height:1.45}
+.atajo-icono{
+  width:46px; height:46px; border-radius:50%; display:grid; place-items:center;
+  background:var(--superficie-alta); color:var(--texto-2); font-size:19px; flex:none;
+}
+.atajo .flecha{color:var(--texto-3); font-size:18px; transition:color .15s, transform .15s}
+.atajo:hover .flecha{color:var(--texto); transform:translateX(3px)}
+.atajo.destacado{border-color:rgba(29,185,84,.35); background:linear-gradient(180deg,var(--verde-tenue),var(--superficie) 70%)}
+.atajo.destacado .atajo-icono{background:var(--verde); color:#06180d}
+.atajo.destacado:hover{border-color:var(--verde)}
+
+/* --- Inicio: dato personal --------------------------------- */
+.detalle-personal{
+  display:flex; align-items:flex-start; gap:16px; margin-top:16px;
+  background:var(--superficie); border:1px solid var(--borde-suave);
+  border-radius:var(--radio-g); padding:22px 24px;
+}
+.detalle-icono{
+  width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+  background:var(--superficie-alta); color:var(--verde); font-size:16px; flex:none;
+}
+.detalle-label{
+  display:block; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--texto-3); font-weight:600; margin-bottom:5px;
+}
+.detalle-personal p{margin:0; font-size:17px; color:var(--texto)}
+
+/* --- Cifras grandes ---------------------------------------- */
+.cifras{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px}
+.cifra{
+  background:var(--superficie); border:1px solid var(--borde-suave);
+  border-radius:var(--radio); padding:22px 24px;
+  display:flex; flex-direction:column; gap:2px;
+}
+.cifra.acento{border-color:rgba(29,185,84,.3)}
+.numero{font-size:38px; font-weight:700; line-height:1.05; font-variant-numeric:tabular-nums}
+.cifra.acento .numero{color:var(--verde)}
+.etiqueta{font-size:14px; color:var(--texto-2)}
+.matiz{font-size:12.5px; color:var(--texto-3); margin-top:6px}
+
+/* --- Dato curioso ------------------------------------------ */
+.curioso{
+  margin:20px 0 44px; padding:24px 28px; border-radius:var(--radio-g);
+  background:var(--superficie); border:1px solid var(--borde-suave);
+}
+.curioso-principal{margin:0; font-size:21px; font-weight:500; color:var(--texto)}
+.curioso-lista{
+  list-style:none; padding:0; margin:18px 0 0;
+  display:flex; flex-wrap:wrap; gap:8px 10px; font-size:13.5px; color:var(--texto-2);
+}
+.curioso-lista li{background:var(--superficie-alta); padding:6px 14px; border-radius:999px}
+
+/* --- Rankings ---------------------------------------------- */
+.dos-columnas{display:grid; grid-template-columns:1fr 1fr; gap:32px}
+.panel-ranking{min-width:0}
+.seccion-titulo{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:16px;
+  margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--borde-suave);
+}
+.seccion-titulo h2{font-size:19px}
+.seccion-titulo .eyebrow{margin-bottom:4px}
+.seccion-nota{font-size:11.5px; color:var(--texto-3); text-transform:uppercase; letter-spacing:.12em}
+.ranking{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:2px}
+.ranking li{
+  display:flex; align-items:center; gap:14px;
+  padding:8px 12px; border-radius:10px; transition:background .15s;
+}
+.ranking li:hover{background:var(--superficie)}
+.posicion{
+  width:20px; text-align:right; color:var(--texto-3);
+  font-size:14px; font-variant-numeric:tabular-nums; flex:none;
+}
+.portada-mini{width:46px; height:46px; border-radius:6px; object-fit:cover; flex:none}
+.inicial{
+  display:grid; place-items:center; font-weight:700; font-size:19px;
+  color:rgba(255,255,255,.92);
+}
+.ranking .texto{display:flex; flex-direction:column; min-width:0; flex:1}
+.principal{font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.secundario{
+  font-size:13px; color:var(--texto-3);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.valor{color:var(--texto-2); font-size:14px; font-variant-numeric:tabular-nums; flex:none}
+.llamada{display:inline-block; margin-top:44px; color:var(--verde); font-weight:600; font-size:17px}
+.llamada:hover{text-decoration:underline}
+
+/* --- Estados de ánimo -------------------------------------- */
+.animos{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+.animo{
+  display:flex; flex-direction:column; gap:6px; text-align:left;
+  padding:22px 22px 24px; border-radius:var(--radio-g);
+  background:var(--superficie); border:1px solid var(--borde-suave);
+  transition:background .15s, border-color .15s, transform .12s;
+}
+.animo:hover{background:var(--superficie-alta); border-color:var(--borde); transform:translateY(-2px)}
+.animo-icono{font-size:24px; line-height:1; margin-bottom:4px}
+.animo-nombre{font-size:18px; font-weight:600}
+.animo-texto{font-size:13.5px; color:var(--texto-3); line-height:1.45}
+.animo.elegido{
+  background:var(--verde); border-color:var(--verde); color:#06180d;
+}
+.animo.elegido .animo-texto{color:rgba(6,24,13,.75)}
+
+/* --- Momento del día --------------------------------------- */
+.momentos{display:flex; align-items:center; gap:10px; margin:30px 0 8px; flex-wrap:wrap}
+.momentos-titulo{
+  font-size:11.5px; color:var(--texto-3); text-transform:uppercase;
+  letter-spacing:.14em; font-weight:600; margin-right:4px;
+}
+.momento{
+  display:inline-flex; align-items:center; gap:7px;
+  padding:8px 18px; border-radius:999px; font-size:14px;
+  background:var(--superficie); border:1px solid var(--borde); color:var(--texto-2);
+  transition:background .15s, color .15s;
+}
+.momento:hover{background:var(--superficie-alta); color:var(--texto)}
+.momento.elegido{background:var(--texto); color:#111; border-color:var(--texto); font-weight:600}
+.momentos-nota{font-size:12.5px; color:var(--texto-3); margin-left:6px}
+
+/* --- Resultado de la selección ----------------------------- */
+.resultado-cabecera{
+  display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
+  flex-wrap:wrap; margin:48px 0 18px; padding-bottom:12px;
+  border-bottom:1px solid var(--borde-suave);
+}
+.resultado-cabecera h2{font-size:24px}
+.resultado-cabecera .eyebrow{margin-bottom:4px}
+.pill{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--verde-tenue); color:var(--verde-claro);
+  border:1px solid rgba(29,185,84,.3);
+  padding:7px 16px; border-radius:999px; font-size:14px; font-weight:600;
+}
+
+/* --- Fichas de recomendación ------------------------------- */
+.fichas{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+.ficha{
+  background:var(--superficie); border:1px solid var(--borde-suave);
+  border-radius:var(--radio-g); padding:16px; transition:background .15s, transform .12s;
+}
+.ficha:hover{background:var(--superficie-alta); transform:translateY(-3px)}
+.portada-wrap{position:relative; margin-bottom:14px}
+.ficha .portada{
+  display:grid; place-items:center;
+  width:100%; aspect-ratio:1; border-radius:8px; object-fit:cover; font-size:52px;
+}
+.numero-reco{
+  position:absolute; left:10px; bottom:10px;
+  width:26px; height:26px; border-radius:50%;
+  background:rgba(0,0,0,.72); color:#fff; font-size:13px; font-weight:600;
+  display:grid; place-items:center; backdrop-filter:blur(4px);
+}
+.ficha h3{font-size:16.5px; margin-bottom:3px; line-height:1.3}
+.artista{margin:0 0 12px; color:var(--texto-2); font-size:14px}
+.explicacion{margin:0; font-size:13px; color:var(--texto-3); line-height:1.5}
+
+/* --- Estados y avisos -------------------------------------- */
+.estado-vacio{
+  margin-top:44px; padding:52px 24px; text-align:center;
+  border:1px dashed var(--borde); border-radius:var(--radio-g); color:var(--texto-3);
+}
+.estado-vacio span{display:block; font-size:30px; color:var(--verde); margin-bottom:12px}
+.estado-vacio p{margin:0; font-size:15.5px}
+.invitacion{color:var(--texto-3); margin-top:40px}
+.aviso{
+  margin-top:26px; padding:16px 20px; border-radius:var(--radio);
+  background:var(--verde-tenue); border:1px solid rgba(29,185,84,.28);
+  color:var(--texto-2); font-size:14.5px;
+}
+
+/* --- Bloques de texto largo (pantallas informativas) ------- */
+.bloque{
+  background:var(--superficie); border:1px solid var(--borde-suave);
+  border-radius:var(--radio-g); padding:26px 28px; margin-bottom:16px;
+}
+.bloque h2{font-size:17px; color:var(--texto); margin-bottom:12px}
+.bloque p{margin:0 0 12px; color:var(--texto-2)}
+.bloque p:last-child{margin-bottom:0}
+.grande{font-size:21px; color:var(--texto) !important; font-weight:500}
+.pasos{margin:0; padding-left:20px; color:var(--texto-2)}
+.pasos li{margin-bottom:9px}
+.nota{font-size:13px; color:var(--texto-3) !important; margin-top:16px !important}
+
+/* --- Marca de origen: conocida o descubrimiento ------------- */
+/* Las dos mitades de la lista se distinguen de un vistazo. El verde pleno se
+   sigue reservando para lo accionable (los botones); estas marcas usan el
+   mismo tratamiento tenue que la etiqueta de estado de ánimo. */
+.marca{
+  display:inline-flex; align-items:center;
+  padding:4px 11px; border-radius:999px;
+  font-size:11.5px; font-weight:600; letter-spacing:.04em;
+  border:1px solid transparent; white-space:nowrap;
+}
+.marca.conocida{background:rgba(255,255,255,.10); color:var(--texto-2); border-color:var(--borde)}
+.marca.nueva{background:var(--verde-tenue); color:var(--verde-claro); border-color:rgba(29,185,84,.3)}
+.portada-wrap .marca{position:absolute; top:10px; left:10px; backdrop-filter:blur(4px)}
+.portada-wrap .marca.conocida{background:rgba(0,0,0,.62); color:#fff; border-color:rgba(255,255,255,.18)}
+.portada-wrap .marca.nueva{background:rgba(6,24,13,.72); color:var(--verde-claro)}
+
+/* Reparto de la selección, bajo el título del resultado */
+.reparto{display:flex; align-items:center; gap:9px; margin:10px 0 0; flex-wrap:wrap}
+.reparto-mas{color:var(--texto-3); font-size:14px}
+
+/* --- Llevarse la selección a Spotify ----------------------- */
+.caja-playlist{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:22px; flex-wrap:wrap; margin-top:32px;
+  background:var(--superficie); border:1px solid var(--borde-suave);
+  border-radius:var(--radio-g); padding:24px 26px;
+}
+.caja-playlist-texto{max-width:56ch}
+.caja-playlist-texto strong{display:block; font-size:17px; margin-bottom:4px}
+.caja-playlist-texto small{display:block; font-size:13.5px; color:var(--texto-3); line-height:1.5}
+.caja-playlist form{margin:0}
+.caja-playlist-aviso{font-size:12.5px; color:var(--texto-3); margin:8px 0 0; max-width:34ch}
+.enlace-tenue{display:block; margin-top:10px; font-size:12.5px; color:var(--texto-3)}
+.enlace-tenue:hover{color:var(--texto-2); text-decoration:underline}
+
+/* --- Resultado de haber creado la playlist ----------------- */
+.resultado-playlist{
+  margin-top:30px; padding:26px 28px; border-radius:var(--radio-g);
+  background:linear-gradient(180deg,var(--verde-tenue),var(--superficie) 70%);
+  border:1px solid rgba(29,185,84,.32);
+}
+.resultado-playlist h2{font-size:21px; margin-bottom:10px}
+.resultado-detalle{margin:0 0 6px; color:var(--texto); font-size:15.5px}
+.resultado-nota{margin:6px 0 0; color:var(--texto-3); font-size:13.5px; line-height:1.5}
+.resultado-playlist .boton{margin-top:18px}
+
+/* Aviso en tono de error: mismo formato, otro color, sin jerga técnica */
+.aviso.error{
+  background:rgba(230,103,103,.10); border-color:rgba(230,103,103,.32);
+  color:var(--texto-2);
+}
+
+/* --- Adaptación a pantallas pequeñas ----------------------- */
+@media (max-width:960px){
+  .animos,.fichas{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .animos,.fichas{grid-template-columns:1fr}
+  .caja-playlist{flex-direction:column; align-items:flex-start}
+}
+@media (max-width:860px){
+  .dos-columnas{grid-template-columns:1fr}
+  .barra{flex-wrap:wrap; gap:14px; padding:14px 20px}
+  .barra nav{order:3; width:100%; overflow-x:auto}
+  .hoja{padding:32px 20px 72px}
+  .cabecera-pagina{align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+}

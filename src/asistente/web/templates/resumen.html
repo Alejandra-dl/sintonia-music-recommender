@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% set activa = 'perfil' %}
+{% block titulo %}Mi perfil musical · Sintonía{% endblock %}
+{% block contenido %}
+<div class="hoja">
+  <div class="cabecera-pagina">
+    <div>
+      <p class="eyebrow">MI HISTORIAL</p>
+      <h1 class="titulo-pantalla">Tu perfil musical</h1>
+      <p class="subtitulo">De {{ ind.desde_texto }} a {{ ind.hasta_texto }}</p>
+    </div>
+    <a class="boton compacto primario" href="{{ url_for('pantalla_animo') }}">Recomiéndame música</a>
+  </div>
+
+  <nav class="momentos" aria-label="Periodo del perfil">
+    <span class="momentos-titulo">PERIODO</span>
+    <a class="momento {{ 'elegido' if not anio }}" href="{{ url_for('pantalla_resumen') }}">Todo</a>
+    {% for a in anios %}
+    <a class="momento {{ 'elegido' if anio == a }}" href="{{ url_for('pantalla_resumen', anio=a) }}">{{ a }}</a>
+    {% endfor %}
+    <span class="momentos-nota">todo lo de esta pantalla cambia con el periodo</span>
+  </nav>
+
+  <section class="cifras">
+    <div class="cifra">
+      <span class="numero">{{ "{:,.0f}".format(ind.horas).replace(",", ".") }}</span>
+      <span class="etiqueta">horas escuchadas</span>
+      <span class="matiz">{{ "%.0f"|format(ind.dias_equivalentes) }} días seguidos de música</span>
+    </div>
+    <div class="cifra">
+      <span class="numero">{{ "{:,.0f}".format(ind.canciones).replace(",", ".") }}</span>
+      <span class="etiqueta">canciones distintas</span>
+    </div>
+    <div class="cifra">
+      <span class="numero">{{ "{:,.0f}".format(ind.artistas).replace(",", ".") }}</span>
+      <span class="etiqueta">artistas distintos</span>
+    </div>
+    <div class="cifra acento">
+      <span class="numero">{{ "{:,.0f}".format(ind.destacado_valor).replace(",", ".") }}</span>
+      <span class="etiqueta">{{ ind.destacado_etiqueta }}</span>
+      <span class="matiz">{{ ind.destacado_matiz }}</span>
+    </div>
+  </section>
+
+  <section class="curioso">
+    <div><span class="detalle-label">Tu escucha de un vistazo</span><p class="curioso-principal">{{ curiosos.principal }}</p></div>
+    <ul class="curioso-lista">
+      {% for s in curiosos.secundarios %}<li>{{ s }}</li>{% endfor %}
+    </ul>
+  </section>
+
+  <div class="dos-columnas">
+    <section class="panel-ranking">
+      <div class="seccion-titulo"><div><p class="eyebrow">TOP 10 · {{ anio or "TODO EL HISTORIAL" }}</p><h2>Tus canciones</h2></div><span class="seccion-nota">reproducciones</span></div>
+      <ol class="ranking">
+        {% for c in canciones %}
+        <li>
+          <span class="posicion">{{ c.posicion }}</span>
+          {% if imagenes.get(c.spotify_track_uri) %}
+            <img class="portada-mini" src="{{ imagenes[c.spotify_track_uri] }}" alt="Portada de {{ c.cancion }}">
+          {% else %}
+            <span class="portada-mini inicial" style="background: {{ color(c.artista) }}">{{ c.artista[0]|upper }}</span>
+          {% endif %}
+          <span class="texto">
+            <span class="principal">{{ c.cancion }}</span>
+            <span class="secundario">{{ c.artista }}</span>
+          </span>
+          <span class="valor">{{ "{:,.0f}".format(c.reproducciones).replace(",", ".") }}</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </section>
+
+    <section class="panel-ranking">
+      <div class="seccion-titulo"><div><p class="eyebrow">TOP 10 · {{ anio or "TODO EL HISTORIAL" }}</p><h2>Tus artistas</h2></div><span class="seccion-nota">reproducciones</span></div>
+      <ol class="ranking">
+        {% for a in artistas %}
+        <li>
+          <span class="posicion">{{ a.posicion }}</span>
+          <span class="portada-mini inicial" style="background: {{ color(a.artista) }}">{{ a.artista[0]|upper }}</span>
+          <span class="texto">
+            <span class="principal">{{ a.artista }}</span>
+            <span class="secundario">{{ a.horas }} horas · {{ a.canciones }} canciones</span>
+          </span>
+          <span class="valor">{{ "{:,.0f}".format(a.reproducciones).replace(",", ".") }}</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </section>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+# Servicios del proyecto. Asistente musical
+#
+#   mongo      base de datos documental del proyecto
+#   web        la aplicación que se enseña (Flask), en el 8501
+#   dashboard  el análisis completo (Streamlit), en el 8502
+#   jupyter    notebooks de análisis y modelado, en el 8888
+#
+# La web y el dashboard son cosas distintas a propósito: la web es una aplicación de
+# producto, con pocas pantallas y muy visual; el dashboard es una herramienta de
+# análisis. Las dos comparten la misma imagen y los mismos datos.
+#
+# La carpeta del proyecto se monta entera en /proyecto, así que todo lo que se genera
+# (datos, modelos, figuras, memoria) queda en el disco y no dentro del contenedor.
+#
+# Puesta en marcha, en orden:
+#   docker compose up -d --build            levanta los cuatro servicios
+#   docker compose run --rm web python -m asistente.datos.mongo cargar --todos
+#                                           sube a MongoDB los ficheros ya procesados
+#   http://127.0.0.1:8501  aplicación   ·  http://localhost:8502  cuadro de mando
+#
+# La aplicación se abre por 127.0.0.1 y no por localhost porque es la dirección que
+# Spotify admite como destino de retorno al conectar una cuenta.
+#
+# Si MongoDB no está disponible, la web y el dashboard leen los ficheros Parquet y lo
+# indican en pantalla: la demostración no depende de la base de datos.
+
+name: asistente-musical
+
+services:
+
+  mongo:
+    image: mongo:7
+    container_name: tfm_mongo
+    ports:
+      - "27017:27017"          # para poder conectarse también desde MongoDB Compass
+    volumes:
+      - mongo_datos:/data/db   # volumen con nombre: los datos sobreviven a "docker compose down"
+    restart: unless-stopped
+    # La web y el dashboard deciden al arrancar si leen de MongoDB o de Parquet, y cachean esa
+    # decisión. Sin esta comprobación podían arrancar antes de que Mongo respondiera y quedarse
+    # en Parquet toda la sesión aunque la base estuviera bien.
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  web:
+    build: .
+    container_name: tfm_web
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/proyecto
+    environment:
+      MONGO_URI: mongodb://mongo:27017     # dentro de Docker la base se llama "mongo"
+      MONGO_DB: tfm_musica
+      LASTFM_API_KEY: ${LASTFM_API_KEY:-}
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID:-}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET:-}
+      # Spotify ya no admite "localhost" como destino de retorno: en local hay que usar
+      # 127.0.0.1, y abrir la web por esa misma dirección para que la sesión coincida.
+      SPOTIFY_REDIRECT_URI: ${SPOTIFY_REDIRECT_URI:-http://127.0.0.1:8501/spotify/callback}
+      PLAYLIST_PREFIJO: ${PLAYLIST_PREFIJO:-Sintonía}
+      # Con la que Flask firma la cookie de sesión, donde vive el token de Spotify.
+      CLAVE_SESION: ${CLAVE_SESION:-}
+    command: flask --app asistente.web.inicio run --host 0.0.0.0 --port 8501
+
+  dashboard:
+    build: .
+    container_name: tfm_dashboard
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "8502:8502"
+    volumes:
+      - .:/proyecto
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: tfm_musica
+    command: >
+      streamlit run src/asistente/dashboard/inicio.py
+      --server.address 0.0.0.0 --server.port 8502
+
+  jupyter:
+    build: .
+    container_name: tfm_jupyter
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/proyecto
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: tfm_musica
+      LASTFM_API_KEY: ${LASTFM_API_KEY:-}
+    command: >
+      jupyter lab --ip 0.0.0.0 --port 8888 --no-browser --allow-root
+      --IdentityProvider.token=${JUPYTER_TOKEN:?define JUPYTER_TOKEN en .env} --ServerApp.root_dir=/proyecto
+
+volumes:
+  mongo_datos:

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% set activa = 'inicio' %}
+{% block titulo %}Inicio · Sintonía{% endblock %}
+{% block contenido %}
+<div class="hoja inicio-hoja">
+
+  <section class="hero">
+    <p class="eyebrow">Tu momento, tu música</p>
+    <h1>Dime cómo te sientes y te recomiendo qué escuchar.</h1>
+    <p class="hero-texto">Una selección construida a partir de tu historial musical y del momento que elijas.</p>
+    <ul class="hero-datos">
+      <li><b>{{ "{:,.0f}".format(ind.horas).replace(",", ".") }}</b> horas escuchadas</li>
+      <li><b>{{ "{:,.0f}".format(ind.canciones).replace(",", ".") }}</b> canciones</li>
+      <li><b>{{ "{:,.0f}".format(ind.artistas).replace(",", ".") }}</b> artistas</li>
+      <li>desde {{ ind.desde_texto }}</li>
+    </ul>
+  </section>
+
+  <section class="atajos">
+    <a class="atajo destacado" href="{{ url_for('pantalla_animo') }}">
+      <span class="atajo-icono" aria-hidden="true">✦</span>
+      <span>
+        <strong>¿Cómo te sientes hoy?</strong>
+        <small>Elige un estado de ánimo y descubre seis canciones que no has escuchado.</small>
+      </span>
+      <span class="flecha" aria-hidden="true">→</span>
+    </a>
+    <a class="atajo" href="{{ url_for('pantalla_resumen') }}">
+      <span class="atajo-icono" aria-hidden="true">♫</span>
+      <span>
+        <strong>Tu perfil musical</strong>
+        <small>Tus canciones y artistas más escuchados, y algunos datos de tu historial.</small>
+      </span>
+      <span class="flecha" aria-hidden="true">→</span>
+    </a>
+  </section>
+
+  <section class="detalle-personal">
+    <span class="detalle-icono" aria-hidden="true">◎</span>
+    <div>
+      <span class="detalle-label">Algo sobre tu forma de escuchar</span>
+      <p>{{ curioso }}</p>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
